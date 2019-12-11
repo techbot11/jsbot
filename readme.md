@@ -1,6 +1,6 @@
 # generate-react
 
-A small cli for react that generates a starter boilerplate with mobx, sass, routing, protected routes and an Api call.
+A small cli for react that generates a starter boilerplate.
 <br>
 You can also generate new components with this package. 
 <br>
@@ -13,7 +13,7 @@ Run
 You may need to ```sudo``` it.
 ## Why?
 
-The create-react-app cli has no actual structure and I noticed that when I start a project almost everytime I needed a router,state-management (redux or mobx, I choose mobx - in the future maybe a redux flag to generate with redux) and 
+The create-react-app cli has no actual structure and I noticed that when I start a project almost everytime I needed a router,state-management (redux, I choose mobx - in the future maybe a redux flag to generate with redux) and 
 sass (who doesn't love Sass right?!).
 
 And the second reason was that I had to manually copy-paste the code when I wanted to create a component. 
