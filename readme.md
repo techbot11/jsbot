@@ -1,4 +1,4 @@
-# generate-react
+# JSBOT
 
 A small cli for react that generates a starter boilerplate.
 <br>
