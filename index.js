@@ -6,8 +6,8 @@ let fs = require('fs-extra');
 const inquirer = require('inquirer');
 const replace = require('replace');
 const template = require('./component_template/template');
-let appName;
-let appDirectory;
+let appName = '';
+let appDirectory = `${process.cwd()}`;
 let newCompPath;
 let nofolder;
 let functional;
@@ -23,23 +23,22 @@ program
       type: 'list',
       name: 'project',
       message: "Which project you want to create?",
-      choices: ['ANGULAR', 'REACT', 'REACT NATIVE']
+      choices: ['Angular', 'React', 'React Native']
     }]
 
     inquirer.prompt(questions).then(answers => {
       project = answers['project']
       switch (project) {
-        case 'REACT':
+        case 'React':
           createReact(dir)
           break;
-        case 'REACT NATIVE':
+        case 'React Native':
           console.log('working on react native'.green);
           break;
-        case 'ANGULAR':
+        case 'Angular':
           console.log('working on angular'.green);
           break;
-  
-  
+
         default:
           console.log(`working on ${project} new feature`.green);
           break;
@@ -48,22 +47,32 @@ program
   });
 
 program
-  .command('test')
-  .action(() => {
-
+  .command('ng [args...]')
+  .option('-v, --versions', 'show version of angular cli')
+  .option('--opt <opt>', 'any ng options will given using this, multiple option will be comma seprated')
+  .action((args, cmd) => {
+    const opt = cmd.opt;
+    if (cmd.versions) {
+      shell.exec('ng --version', (e, stdout, stderr) => {
+        
+      })
+      return;
+    }
+    if(opt){
+      shell.exec(`ng ${args.join(' ')} ${opt.split(',').join(' ')}`, (e, stdout, stderr) => {
+        // console.log(stdout);
+      })
+      return;
+    }
+    shell.exec(`ng ${args.join(' ')}`, (e, stdout, stderr) => {
+      // console.log(stdout);
+    })
   })
 
 program
   .command('gc <component>')
   .option('-n, --nofolder', 'Do not wrap component in folder')
   .option('-ws, --nostyle', 'Without stylesheet', true)
-  .option('-f, --functional', 'Create functional component')
-  .action(createComponent);
-
-program
-  .command('generate-component <component>')
-  .option('-n, --nofolder', 'Do not wrap component in folder')
-  .option('-ws, --nostyle', 'Without stylesheet')
   .option('-f, --functional', 'Create functional component')
   .action(createComponent);
 
@@ -100,13 +109,13 @@ async function createReact(dir) {
 function npmCommandRunner(cmd = 'start') {
   shell.exec(`npm run ${cmd}`, (e, stdout, stderr) => {
     if (e.toString().search('Something is already running on port 3000.')) {
-      console.log(`Error ⇑`.red);
+      console.log(`Error: Something is already running on port 3000.`.red);
     }
   })
 }
 function createReactApp() {
   return new Promise(resolve => {
-    if (appName) {
+    if (appName && appName !== ' ') {
       console.log("\nCreating react app...".green);
       try {
         shell.exec(`node ${require('path').dirname(require.main.filename)}/node_modules/create-react-app/index.js ${appName}`, (e, stdout, stderr) => {
@@ -137,7 +146,7 @@ function createReactApp() {
     } else {
       console.log("\nNo app name was provided.".red);
       console.log("\nProvide an app name in the following format: ");
-      console.log("\ncreate-nick-react ", "app-name\n".green);
+      console.log("\njsbot create", "app-name\n".green);
       resolve(false);
       process.exit(1);
     }
