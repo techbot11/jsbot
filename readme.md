@@ -70,9 +70,9 @@ You can generate these files anywhere. If it detects that the project directory 
 
 Run
 
->```jsbot init <ProjectName>```
+>```jsbot create <ProjectName>```
 
-This will inializa a new project with the boilerplate in place with following project structure : <br>
+This will ask you what project you want to inialize, a new project with the boilerplate in place with following project structure : <br>
 ```
 project
 └─ node_modules
@@ -109,6 +109,8 @@ project
 │ package-lock.json  
 │ README.md 
 ```
+currently react project in working and soon other project will come too.
+
 ### Generate Component
 Run
 >```jsbot gc <ComponentName>```
