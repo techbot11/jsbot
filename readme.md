@@ -8,7 +8,7 @@ You can also generate new components with this package.
 
 Run
 
->```npm install -g cli-react```
+>```npm install -g jsbot-cli```
 
 You may need to ```sudo``` it.
 ## Why?
@@ -70,7 +70,7 @@ You can generate these files anywhere. If it detects that the project directory 
 
 Run
 
->```rct init <ProjectName>```
+>```jsbot init <ProjectName>```
 
 This will inializa a new project with the boilerplate in place with following project structure : <br>
 ```
@@ -111,23 +111,23 @@ project
 ```
 ### Generate Component
 Run
->```rct gc <ComponentName>```
+>```jsbot gc <ComponentName>```
 
 This will create a folder of your component name, and a class component js file of the same name.
 You can also give paths to the component name for example :
->```rct gc component/comp1``` => will create a component within the component folder (and make it if it doesn't exist). 
+>```jsbot gc component/comp1``` => will create a component within the component folder (and make it if it doesn't exist). 
 #### Options
 Create a functional component
->```rct gc <ComponentName> -f``` <b>or</b> ```rct gc <ComponentName> --functional```
+>```jsbot gc <ComponentName> -f``` <b>or</b> ```jsbot gc <ComponentName> --functional```
 
 Create a component with css
->```rct gc <ComponentName> -s``` <b>or</b> ```rct gc <ComponentName> --style```
+>```jsbot gc <ComponentName> -s``` <b>or</b> ```jsbot gc <ComponentName> --style```
 
 Create a component and make it an oberserver
->```rct gc <ComponentName> -o``` <b>or</b> ```rct gc <ComponentName> --observable```
+>```jsbot gc <ComponentName> -o``` <b>or</b> ```jsbot gc <ComponentName> --observable```
 
 Create a component but don't wrap it in a folder
->```rct gc <ComponentName> -n``` <b>or</b> ```rct gc <ComponentName> --nofolder```
+>```jsbot gc <ComponentName> -n``` <b>or</b> ```jsbot gc <ComponentName> --nofolder```
 
 
 

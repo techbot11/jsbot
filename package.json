@@ -1,5 +1,5 @@
 {
-  "name": "jsbot",
+  "name": "jsbot-cli",
   "version": "1.0.0",
   "description": "A npm package to generate a react boilerplate with : css, redux, routing. Also with the possibilty to generate react components from the command line with options to generate stylesheet, functional components and observer components",
   "main": "index.js",
@@ -9,16 +9,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nickverstocken/cli-react"
-  },
   "author": "Ankur Sanghvi",
-  "license": "MIT",
+  "license": "ISC",
   "dependencies": {
-    "colors": "^1.1.2",
-    "commander": "^2.13.0",
-    "create-react-app": "^1.5.0",
+    "colors": "^1.4.0",
+    "commander": "^2.20.3",
+    "create-react-app": "^1.5.2",
     "fs-extra": "^5.0.0",
     "inquirer": "^7.0.0",
     "json": "^9.0.6",
