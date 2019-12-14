@@ -135,9 +135,3 @@ Create a component but don't wrap it in a folder
 
 <br>
 ENJOY!
-
-### TODO
-
-- [ ] Add Typescript option to init
-- [ ] Better output messages
-- [ ] Redux option
