@@ -6,7 +6,7 @@ class :className extends Component {
   render(){
     return (
       <div className=":className">
-    
+        :className is working.
       </div>
     )
   }
@@ -19,6 +19,7 @@ const functional = `
 const :className = () => {
   return (
     <div className=":className">
+      :className is working.
     </div>
   )
 }
@@ -26,10 +27,29 @@ const :className = () => {
 }
 `
 
+const reducer = `
+import initialState from './:classNameConstant';
+export const :classNameReducer = (state = initialState,action) => {
+  switch(action.type) {
+      case '':
+          return {
+              ...state
+          }
+      default:
+          return state;
+  }
+}
+`
+
+const constant = `
+export const initialState = {
+}
+`
+
 const imports = {
   react: "import React, {Component} from 'react';",
   propTypes: "import PropTypes from 'prop-types';",
-  stylesheet: "import './:className.scss';",
+  stylesheet: "import './:className.css';",
   connect: "import {connect} from 'react-redux';"
 }
 
@@ -56,5 +76,7 @@ module.exports = {
   main: main,
   imports: imports,
   exported: exported,
-  functional: functional
+  functional: functional,
+  reducer,
+  constant
 }

@@ -54,11 +54,11 @@ program
     const opt = cmd.opt;
     if (cmd.versions) {
       shell.exec('ng --version', (e, stdout, stderr) => {
-        
+
       })
       return;
     }
-    if(opt){
+    if (opt) {
       shell.exec(`ng ${args.join(' ')} ${opt.split(',').join(' ')}`, (e, stdout, stderr) => {
         // console.log(stdout);
       })
@@ -72,7 +72,7 @@ program
 program
   .command('gc <component>')
   .option('-n, --nofolder', 'Do not wrap component in folder')
-  .option('-ws, --nostyle', 'Without stylesheet', true)
+  .option('-s, --nostyle', 'Without stylesheet', true)
   .option('-f, --functional', 'Create functional component')
   .action(createComponent);
 
@@ -93,7 +93,7 @@ async function createReact(dir) {
     console.log('Something went wrong while trying to create a new React app using create-react-app'.red);
     process.exit(1);
   } else {
-    await installPackages();
+    // await installPackages();
     await updatePackage_json();
     await generateBoilerplate();
     shell.exec(`npm install`, { cwd: appDirectory }, (e, stdout, stderr) => {
@@ -186,9 +186,12 @@ function generateBoilerplate() {
       fs.unlinkSync(`${appDirectory}/src/index.css`);
       fs.unlinkSync(`${appDirectory}/src/logo.svg`);
     }
-    fs.copySync(`${require('path').dirname(require.main.filename)}/templates/react-redux/src`, `${appDirectory}/src`);
-    fs.copySync(`${require('path').dirname(require.main.filename)}/templates/react-redux/public`, `${appDirectory}/public`);
-    resolve();
+    fs.copySync(`${require('path').dirname(require.main.filename)}/templates/react/`, `${appDirectory}/`);
+    console.log('Installing node modules'.green);
+    shell.exec(`npm install`, { cwd: appDirectory }, (e) => {
+      console.log('Project Created. Happy Coding..!'.green);
+      resolve();
+    })
   })
 }
 async function createComponent(component, cmd) {
@@ -197,9 +200,10 @@ async function createComponent(component, cmd) {
   cmd.functional ? functional = true : functional = false;
   cmd.observable ? observable = true : observable = false;
   cmd.nostyle ? stylesheet = false : stylesheet = true;
-  // if (fs.existsSync('./src/components')) {
-  //   newCompPath = `./src/components/${component}`;
-  // } else {
+  if (fs.existsSync('./src/components')) {
+    newCompPath = `./src/components/${component}`;
+  }
+  // else {
   //   component = `./src/components/${component}`;
   // }
   let template = await buildTemplate();
@@ -225,7 +229,7 @@ function capitalize(comp) {
   })
   return compName;
 }
-function writeFile(template, component) {
+function writeFile(ptemplate, component) {
   let path = newCompPath;
   if (nofolder) {
     strArr = newCompPath.split('/');
@@ -233,6 +237,7 @@ function writeFile(template, component) {
     path = strArr.join('/');
     console.log(path);
   }
+  console.log(path, component);
   let comp = component.split('/');
   comp = comp[comp.length - 1];
   if (path) {
@@ -241,16 +246,49 @@ function writeFile(template, component) {
     path = capitalize(comp);
   }
   if (stylesheet) {
-    if (!fs.existsSync(`${path}.scss`)) {
+    if (!fs.existsSync(`${path}.css`)) {
       console.log('creating syles');
-      fs.outputFileSync(`${path}.scss`, '');
-      console.log(`Stylesheet ${comp} created at ${path}.scss`.green)
+      fs.outputFileSync(`${path}.css`, '');
+      console.log(`Stylesheet ${comp} created at ${path}.css`.green)
     } else {
-      console.log(`Stylesheet ${comp} allready exists at ${path}.scss, choose another name if you want to create a new stylesheet`.red)
+      console.log(`Stylesheet ${comp} already exists at ${path}.css, choose another name if you want to create a new stylesheet`.red);
+      return
     }
   }
+  if (!fs.existsSync(`${path}Action.js`)) {
+    fs.outputFileSync(`${path}Action.js`, '');
+    fs.outputFileSync(`${path}Constant.js`, template.constant);
+    console.log(`Action ${comp}Action created at ${path}Action.js`.green)
+    console.log(`Constant ${comp}Constant created at ${path}Constant.js`.green)
+  } else {
+    console.log(`Action ${comp} allready exists at ${path}Action.js, choose another name if you want to create a new component`.red);
+    return
+  }
+  if (!fs.existsSync(`${path}Constant.js`)) {
+    fs.outputFileSync(`${path}Constant.js`, template.constant);
+    console.log(`Constant ${comp}Constant created at ${path}Constant.js`.green)
+  } else {
+    console.log(`Constant ${comp} allready exists at ${path}Constant.js, choose another name if you want to create a new component`.red);
+    return
+  }
+  if (!fs.existsSync(`${path}Reducer.js`)) {
+    fs.outputFile(`${path}Reducer.js`, template.reducer, (err) => {
+      if (err) throw err;
+      replace({
+        regex: ":className",
+        replacement: capitalize(comp),
+        paths: [`${path}Reducer.js`],
+        recursive: false,
+        silent: true,
+      });
+      console.log(`Reducer ${comp}Reducer created at ${path}Reducer.js`.green)
+    });
+  } else {
+    console.log(`Reducer ${comp}Reducer allready exists at ${path}Reducer.js, choose another name if you want to create a new component`.red);
+    return
+  }
   if (!fs.existsSync(`${path}.js`)) {
-    fs.outputFile(`${path}.js`, template, (err) => {
+    fs.outputFile(`${path}.js`, ptemplate, (err) => {
       if (err) throw err;
       replace({
         regex: ":className",
@@ -262,7 +300,8 @@ function writeFile(template, component) {
       console.log(`Component ${comp} created at ${path}.js`.green)
     });
   } else {
-    console.log(`Component ${comp} allready exists at ${path}.js, choose another name if you want to create a new component`.red)
+    console.log(`Component ${comp} allready exists at ${path}.js, choose another name if you want to create a new component`.red);
+    return
   }
 
 
