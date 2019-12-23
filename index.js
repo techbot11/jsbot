@@ -1,20 +1,21 @@
 #!/usr/bin/env node
-let program = require('commander');
-let shell = require('shelljs');
-let colors = require('colors');
-let fs = require('fs-extra');
-const inquirer = require('inquirer');
-const replace = require('replace');
+const program = require('commander');
+const shell = require('shelljs');
+const fs = require('fs-extra');
 const template = require('./component_template/template');
+const replace = require('replace');
+const inquirer = require('inquirer');
+const packageJson = require('./package.json');
 let appName = '';
 let appDirectory = `${process.cwd()}`;
 let newCompPath;
 let nofolder;
 let functional;
 let stylesheet;
+let redux;
 
 program
-  .version('1.0.0')
+  .version(packageJson.version)
   .command('create <dir>')
   .option('-T , --typscript', 'Install with typescript')
   .action((dir) => {
@@ -23,7 +24,7 @@ program
       type: 'list',
       name: 'project',
       message: "Which project you want to create?",
-      choices: ['Angular', 'React', 'React Native']
+      choices: ['React', 'React Native']
     }]
 
     inquirer.prompt(questions).then(answers => {
@@ -33,10 +34,10 @@ program
           createReact(dir)
           break;
         case 'React Native':
-          console.log('working on react native'.green);
+          console.log('We are working on this feature, soon it will be released in new version.'.green);
           break;
         case 'Angular':
-          console.log('working on angular'.green);
+          console.log('We are working on this feature, soon it will be released in new version.'.green);
           break;
 
         default:
@@ -73,12 +74,13 @@ program
   .command('gc <component>')
   .option('-n, --nofolder', 'Do not wrap component in folder')
   .option('-s, --nostyle', 'Without stylesheet', true)
+  .option('-r, --noredux', 'Without redux connect', true)
   .option('-f, --functional', 'Create functional component')
   .action(createComponent);
 
 program
-  .command('run <cmd>')
-  .action(npmCommandRunner)
+  .command('run [cmd]')
+  .action((cmd = 'start') => npmCommandRunner(cmd))
 
 program.parse(process.argv)
 async function createReact(dir) {
@@ -106,7 +108,7 @@ async function createReact(dir) {
   }
 
 }
-function npmCommandRunner(cmd = 'start') {
+function npmCommandRunner(cmd) {
   shell.exec(`npm run ${cmd}`, (e, stdout, stderr) => {
     if (e.toString().search('Something is already running on port 3000.')) {
       console.log(`Error: Something is already running on port 3000.`.red);
@@ -200,8 +202,9 @@ async function createComponent(component, cmd) {
   cmd.functional ? functional = true : functional = false;
   cmd.observable ? observable = true : observable = false;
   cmd.nostyle ? stylesheet = false : stylesheet = true;
-  if (fs.existsSync('./src/components')) {
-    newCompPath = `./src/components/${component}`;
+  cmd.noredux ? redux = false : redux = true;
+  if (fs.existsSync('./src/Components')) {
+    newCompPath = `./src/Components/${component}`;
   }
   // else {
   //   component = `./src/components/${component}`;
@@ -210,15 +213,18 @@ async function createComponent(component, cmd) {
   writeFile(template, component)
 }
 function buildTemplate() {
-  let imports = [template.imports.react, template.imports.propTypes];
+  let imports = [template.imports.react, template.imports.propTypes, template.imports.action];
   if (observable) {
     imports.push(template.imports.observable)
   }
   if (stylesheet) {
-    imports.push(template.imports.stylesheet);
+    imports.push(template.import);
+  }
+  if (redux) {
+    imports.push(template.imports.connect);
   }
   let body = functional ? [template.functional] : [template.main].join('\n');
-  let exported = observable ? [template.exported.observable] : [template.exported.default];
+  let exported = observable ? [template.exported.observable] : redux ? [template.exported.connectStateAndDispatch] : [template.exported.default];
   return imports.join('\n') + '\n' + body + '\n' + exported;
 }
 function capitalize(comp) {
@@ -235,75 +241,70 @@ function writeFile(ptemplate, component) {
     strArr = newCompPath.split('/');
     strArr.splice(strArr.length - 1, 1);
     path = strArr.join('/');
-    console.log(path);
   }
-  console.log(path, component);
   let comp = component.split('/');
   comp = comp[comp.length - 1];
   if (path) {
-    path = path + '/' + capitalize(comp);
+    path = path;
   } else {
     path = capitalize(comp);
   }
   if (stylesheet) {
-    if (!fs.existsSync(`${path}.css`)) {
-      console.log('creating syles');
-      fs.outputFileSync(`${path}.css`, '');
-      console.log(`Stylesheet ${comp} created at ${path}.css`.green)
+    if (!fs.existsSync(`${path}/${comp.toLowerCase()}.css`)) {
+      fs.outputFileSync(`${path}/${comp.toLowerCase()}.css`, '');
+      console.log(`Stylesheet ${comp} created at ${path}/${comp.toLowerCase()}.css`.green)
     } else {
-      console.log(`Stylesheet ${comp} already exists at ${path}.css, choose another name if you want to create a new stylesheet`.red);
+      console.log(`Stylesheet ${comp} already exists at ${path}/${comp.toLowerCase()}.css, choose another name if you want to create a new stylesheet`.red);
       return
     }
   }
-  if (!fs.existsSync(`${path}Action.js`)) {
-    fs.outputFileSync(`${path}Action.js`, '');
-    fs.outputFileSync(`${path}Constant.js`, template.constant);
-    console.log(`Action ${comp}Action created at ${path}Action.js`.green)
-    console.log(`Constant ${comp}Constant created at ${path}Constant.js`.green)
-  } else {
-    console.log(`Action ${comp} allready exists at ${path}Action.js, choose another name if you want to create a new component`.red);
-    return
+  if (redux) {
+    if (!fs.existsSync(`${path}/actions.js`)) {
+      fs.outputFileSync(`${path}/actions.js`, '');
+      console.log(`Action ${comp}/actions created at ${path}/actions.js`.green);
+    } else {
+      console.log(`Action ${comp} already exists at ${path}/actions.js, choose another name if you want to create a new component`.red);
+      return
+    }
+    if (!fs.existsSync(`${path}/constants.js`)) {
+      fs.outputFileSync(`${path}/constants.js`, template.constant);
+      console.log(`Constant ${comp}/constants created at ${path}/constants.js`.green);
+    } else {
+      console.log(`Constant ${comp} already exists at ${path}/constants.js, choose another name if you want to create a new component`.red);
+      return
+    }
+    if (!fs.existsSync(`${path}/reducer.js`)) {
+      fs.outputFile(`${path}/reducer.js`, template.reducer, (err) => {
+        if (err) throw err;
+        replace({
+          regex: ":className",
+          replacement: capitalize(comp),
+          paths: [`${path}/reducer.js`],
+          recursive: false,
+          silent: true,
+        });
+        console.log(`Reducer ${comp}/reducer created at ${path}/reducer.js`.green)
+      });
+    } else {
+      console.log(`Reducer ${comp}/reducer already exists at ${path}/reducer.js, choose another name if you want to create a new component`.red);
+      return
+    }
   }
-  if (!fs.existsSync(`${path}Constant.js`)) {
-    fs.outputFileSync(`${path}Constant.js`, template.constant);
-    console.log(`Constant ${comp}Constant created at ${path}Constant.js`.green)
-  } else {
-    console.log(`Constant ${comp} allready exists at ${path}Constant.js, choose another name if you want to create a new component`.red);
-    return
-  }
-  if (!fs.existsSync(`${path}Reducer.js`)) {
-    fs.outputFile(`${path}Reducer.js`, template.reducer, (err) => {
+  if (!fs.existsSync(`${path}/index.js`)) {
+    fs.outputFile(`${path}/index.js`, ptemplate, (err) => {
       if (err) throw err;
       replace({
         regex: ":className",
         replacement: capitalize(comp),
-        paths: [`${path}Reducer.js`],
+        paths: [`${path}/index.js`],
         recursive: false,
         silent: true,
       });
-      console.log(`Reducer ${comp}Reducer created at ${path}Reducer.js`.green)
+      console.log(`Component ${comp} created at ${path}/index.js`.green)
     });
   } else {
-    console.log(`Reducer ${comp}Reducer allready exists at ${path}Reducer.js, choose another name if you want to create a new component`.red);
+    console.log(`Component ${comp} already exists at ${path}/index.js, choose another name if you want to create a new component`.red);
     return
   }
-  if (!fs.existsSync(`${path}.js`)) {
-    fs.outputFile(`${path}.js`, ptemplate, (err) => {
-      if (err) throw err;
-      replace({
-        regex: ":className",
-        replacement: capitalize(comp),
-        paths: [`${path}.js`],
-        recursive: false,
-        silent: true,
-      });
-      console.log(`Component ${comp} created at ${path}.js`.green)
-    });
-  } else {
-    console.log(`Component ${comp} allready exists at ${path}.js, choose another name if you want to create a new component`.red);
-    return
-  }
-
-
 }
 

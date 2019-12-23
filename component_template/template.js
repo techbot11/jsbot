@@ -16,7 +16,7 @@ class :className extends Component {
 `
 
 const functional = `
-const :className = () => {
+const :className = (props) => {
   return (
     <div className=":className">
       :className is working.
@@ -28,7 +28,7 @@ const :className = () => {
 `
 
 const reducer = `
-import initialState from './:classNameConstant';
+import { initialState } from './constant';
 export const :classNameReducer = (state = initialState,action) => {
   switch(action.type) {
       case '':
@@ -50,24 +50,28 @@ const imports = {
   react: "import React, {Component} from 'react';",
   propTypes: "import PropTypes from 'prop-types';",
   stylesheet: "import './:className.css';",
+  action: "import * as _actions from './action.js';",
   connect: "import {connect} from 'react-redux';"
 }
 
 const exported = {
-  default: "export default :className;",
-  observable: "export default (observer(:className));",
   connectDispatch: "export default connect(null, mapDispatchToProps)(:className);",
-  connectStateAndDispatch: "export default connect(mapStateToProps, mapDispatchToProps)(:className);"
+  observable: "export default (observer(:className));",
+  default: "export default :className;",
+  connectStateAndDispatch: `
+const mapStateToProps = (state, ownProps) =>  ({});
+const mapDispatchToProps = dispatch => ({});
+export default connect(mapStateToProps, mapDispatchToProps)(:className);`
 }
 
 const mapStateToProps = `
-function mapStateToProps(state, ownProps) { 
+const mapStateToProps = (state, ownProps) =>  { 
   return {};
 };
 `
 
 const mapDispatchToProps = `
-function mapDispatchToProps(dispatch) {  
+const mapDispatchToProps = dispatch => {  
   return {};
 }
 `

@@ -78,33 +78,30 @@ project
 └─ node_modules
 └─ public
 └─ src
-│   └─ assets
-│   └─ components
-│   │   └─ guard
-│   │   │   │ protected.js
-│   │   └─ header
-│   │   │   │ header.js
-│   │   │   │ header.scss
-│   │   └─ home
-│   │   │   │ home.js
-│   │   │   │ home.scss
-│   │   └─ posts
-│   │   │   │ posts.js
-│   │   │   │ posts.scss
-│   │   │   └─ post
-│   │   │   │   │ post.js
-│   │   └─ ui
-│   │   │   │ button.js
-│   └─ stores
-│   │   │ store.js
-│   └─ styles
-│   │   │ _base.scss
-│   │   │ _reset.scss  
-│   │   │ _variables.scss
+│   └─ Assets
+│   │   │ logo.png 
+│   │   └─ styles
+│   │   └─ images
+│   └─ Components
+│   │   └─ loader
+│   │   │    │ Loader.js
+│   └─ Containers
+│   │    └─ Homepage
+│   │    │   │ actions.js
+│   │    │   │ contants.js
+│   │    │   │ index.js
+│   │    │   │ reducer.js
+│   └─ Reducers
+│   │    │ index.js
+│   └─ Store
+│   │    │ index.js
+│   │ App.js
+│   │ App.css
+│   │ App.test.js
 │   │ index.js
-│   │ index.scss
-│   │ registerServiceWorker.js
+│   │ index.css
 │ .gitignore
+│ LICENSE
 │ package.json  
 │ package-lock.json  
 │ README.md 
@@ -122,11 +119,11 @@ You can also give paths to the component name for example :
 Create a functional component
 >```jsbot gc <ComponentName> -f``` <b>or</b> ```jsbot gc <ComponentName> --functional```
 
-Create a component with css
->```jsbot gc <ComponentName> -s``` <b>or</b> ```jsbot gc <ComponentName> --style```
+Create a component without style css file
+>```jsbot gc <ComponentName> -s``` <b>or</b> ```jsbot gc <ComponentName> --nostyle```
 
-Create a component and make it an oberserver
->```jsbot gc <ComponentName> -o``` <b>or</b> ```jsbot gc <ComponentName> --observable```
+Create a component without redux
+>```jsbot gc <ComponentName> -r``` <b>or</b> ```jsbot gc <ComponentName> --noredux```
 
 Create a component but don't wrap it in a folder
 >```jsbot gc <ComponentName> -n``` <b>or</b> ```jsbot gc <ComponentName> --nofolder```
