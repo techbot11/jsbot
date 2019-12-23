@@ -1,6 +1,6 @@
 {
   "name": "jsbot-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A npm package to generate a react boilerplate with : css, redux, routing. Also with the possibilty to generate react components from the command line with options to generate stylesheet, functional components and observer components",
   "main": "index.js",
   "bin": {
