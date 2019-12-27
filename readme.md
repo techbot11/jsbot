@@ -84,13 +84,15 @@ project
 │   │   └─ images
 │   └─ Components
 │   │   └─ loader
-│   │   │    │ Loader.js
+│   │   │    │ index.js
+│   │   └─ home
+│   │   │    │ actions.js
+│   │   │    │ constants.js
+│   │   │    │ index.js
+│   │   │    │ reducer.js
 │   └─ Containers
 │   │    └─ Homepage
-│   │    │   │ actions.js
-│   │    │   │ contants.js
 │   │    │   │ index.js
-│   │    │   │ reducer.js
 │   └─ Reducers
 │   │    │ index.js
 │   └─ Store
