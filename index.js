@@ -79,8 +79,28 @@ program
   .action(createComponent);
 
 program
+  .command('gs <service>')
+  .action(createService);
+
+program
   .command('run [cmd]')
   .action((cmd = 'start') => npmCommandRunner(cmd))
+
+program
+  .command('install')
+  .action(() => {
+    console.log('Installing node modules..')
+    shell.exec(`npm install`, (e, stdout, stderr) => {
+      if (!e) {
+        console.log(stdout);
+        console.log('Node modules installed.'.green);
+      } else {
+        console.log(stderr);
+        console.log('Something went wrong'.red);
+        console.log('Please raise a issue to the author'.red);
+      }
+    });
+  })
 
 program.parse(process.argv)
 async function createReact(dir) {
@@ -95,12 +115,13 @@ async function createReact(dir) {
     console.log('Something went wrong while trying to create a new React app using create-react-app'.red);
     process.exit(1);
   } else {
-    // await installPackages();
-    await updatePackage_json();
     await generateBoilerplate();
+    await installPackages();
+    await updatePackage_json();
     shell.exec(`npm install`, { cwd: appDirectory }, (e, stdout, stderr) => {
       if (stderr) {
         console.log(stdout);
+        console.log('Project Created. Happy Coding..!'.green);
         console.log("All done".green);
       }
     });
@@ -110,7 +131,9 @@ async function createReact(dir) {
 }
 function npmCommandRunner(cmd) {
   shell.exec(`npm run ${cmd}`, (e, stdout, stderr) => {
+    console.log(stdout);
     if (e.toString().search('Something is already running on port 3000.')) {
+      console.log('Please run '.white + `npm run ${cmd}`.green);
       console.log(`Error: Something is already running on port 3000.`.red);
     }
   })
@@ -191,7 +214,6 @@ function generateBoilerplate() {
     fs.copySync(`${require('path').dirname(require.main.filename)}/templates/react/`, `${appDirectory}/`);
     console.log('Installing node modules'.green);
     shell.exec(`npm install`, { cwd: appDirectory }, (e) => {
-      console.log('Project Created. Happy Coding..!'.green);
       resolve();
     })
   })
@@ -213,7 +235,7 @@ async function createComponent(component, cmd) {
   writeFile(template, component)
 }
 function buildTemplate() {
-  let imports = [template.imports.react, template.imports.propTypes, template.imports.action];
+  let imports = [template.imports.react, template.imports.action];
   if (observable) {
     imports.push(template.imports.observable)
   }
@@ -304,6 +326,34 @@ function writeFile(ptemplate, component) {
     });
   } else {
     console.log(`Component ${comp} already exists at ${path}/index.js, choose another name if you want to create a new component`.red);
+    return
+  }
+}
+
+async function createService(service) {
+  let newCompPath = `${service}.service.js`;
+  if (fs.existsSync('./src/Services')) {
+    newCompPath = `./src/Services/${service}.service.js`;
+  } else {
+    console.log('Services folder not found in src..'.red);
+  }
+  console.log(newCompPath);
+  let comp = service.split('/');
+  comp = comp[comp.length - 1];
+  if (!fs.existsSync(newCompPath)) {
+    fs.outputFile(newCompPath, template.service, (err) => {
+      if (err) throw err;
+      replace({
+        regex: ":className",
+        replacement: `${capitalize(comp)}Service`,
+        paths: [`${newCompPath}`],
+        recursive: false,
+        silent: true,
+      });
+      console.log(`Service ${comp} created at ${newCompPath}`.green)
+    });
+  } else {
+    console.log(`Service ${comp} already exists at ${newCompPath}, choose another name if you want to create a new component`.red);
     return
   }
 }

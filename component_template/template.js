@@ -11,8 +11,6 @@ class :className extends Component {
     )
   }
 }
-:className.propTypes = {
-}
 `
 
 const functional = `
@@ -22,8 +20,6 @@ const :className = (props) => {
       :className is working.
     </div>
   )
-}
-:className.propTypes = {
 }
 `
 
@@ -46,11 +42,27 @@ export const initialState = {
 }
 `
 
+const service = `
+import axios from 'axios';
+const :className = {
+  :classNameExample: () => {
+      const url = ''; // api url goes here
+      return axios({
+          url,
+          method: "GET",
+          data: '', // data values
+          params: '', // queryString key: value pair
+      })
+  }
+}
+
+export default :className
+`
+
 const imports = {
   react: "import React, {Component} from 'react';",
-  propTypes: "import PropTypes from 'prop-types';",
   stylesheet: "import './:className.css';",
-  action: "import * as _actions from './action.js';",
+  action: "import * as actions from './actions.js';",
   connect: "import {connect} from 'react-redux';"
 }
 
@@ -82,5 +94,6 @@ module.exports = {
   exported: exported,
   functional: functional,
   reducer,
-  constant
+  constant,
+  service
 }

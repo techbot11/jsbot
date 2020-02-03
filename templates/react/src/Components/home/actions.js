@@ -9,7 +9,7 @@ export const fetchData = (url) => {
                 setTimeout(() => {
                     dispatch(fetchDataLoading(false))
                     return response;
-                }, 500)
+                }, 1000)
             })
             .then(response => response.json())
             .then(items => dispatch(fetchDataSuccess(items)))

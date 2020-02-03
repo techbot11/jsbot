@@ -23,14 +23,24 @@ class Home extends React.PureComponent {
                     <p>
                         Edit <code>src/App.js</code> and save to reload.
                     </p>
-                    <a
-                        className="App-link"
-                        href="https://reactjs.org"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Learn React
-                    </a>
+                    <div>
+                        <a
+                            className="App-link"
+                            href="https://reactjs.org"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Learn React
+                        </a>
+                        <a
+                            className="App-link"
+                            href="https://www.npmjs.com/package/jsbot-cli"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            JSBot Docs
+                        </a>
+                    </div>
                 </header>
             </div>
         )
