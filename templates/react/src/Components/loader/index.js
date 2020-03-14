@@ -8,7 +8,7 @@ class Loader extends Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
-            LOADIND..
+            LOADING..
           </p>
         </header>
       </div>

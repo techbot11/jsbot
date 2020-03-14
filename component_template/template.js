@@ -62,7 +62,7 @@ export default :className
 const imports = {
   react: "import React, {Component} from 'react';",
   stylesheet: "import './:className.css';",
-  action: "import * as actions from './actions.js';",
+  action: "import {} from './actions.js';",
   connect: "import {connect} from 'react-redux';"
 }
 
