@@ -120,8 +120,11 @@ Create a functional component
 Create a component without style css file
 >```jsbot gc <Path/ComponentName || ComponentName> -s``` <b>or</b> ```jsbot gc <Path/ComponentName || ComponentName> --nostyle```
 
-Create a component without redux
->```jsbot gc <Path/ComponentName || ComponentName> -r``` <b>or</b> ```jsbot gc <Path/ComponentName || ComponentName> --noredux```
+Create a component with redux and related files
+>```jsbot gc <Path/ComponentName || ComponentName> -r``` <b>or</b> ```jsbot gc <Path/ComponentName || ComponentName> --redux```
+
+Create a component with test file
+>```jsbot gc <Path/ComponentName || ComponentName> -t``` <b>or</b> ```jsbot gc <Path/ComponentName || ComponentName> --test```
 
 Create a component but don't wrap it in a folder
 >```jsbot gc <Path/ComponentName || ComponentName> -n``` <b>or</b> ```jsbot gc <Path/ComponentName || ComponentName> --nofolder```
@@ -134,5 +137,27 @@ This will create a file with a ServiceName js file.
 You can also give paths to the service name for example :
 >```jsbot gs test/testservice1``` => will create a testservice1 service within test folder inside Services folder (and make it if it doesn't exist). 
 
-<br>
+### Utility Commands
+1. Use any npm script command from package.json using following cmd
+Run
+>```jsbot run <script_name>```
+
+This will execute that script for you.
+You can use above command as follow, for example :
+- To run application
+>```jsbot run ``` 
+
+- To run application
+>```jsbot run start ``` 
+
+- To run application testing
+>```jsbot run test ``` 
+
+2. intsall you packages using below command
+>```jsbot install [package name(s)] ```
+
+This command will install all the given packages,
+Usage:
+>```jsbot install jsbot-cli ```
+
 ENJOY!
